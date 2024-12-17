@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pomodoro Timer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #ffe6e6;
+            color: #444;
+            margin-top: 50px;
+        }
+        #timer {
+            font-size: 3em;
+            margin: 20px 0;
+            color: #ff6666;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            background-color: #ff9999;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #ff6666;
+        }
+        input[type="number"] {
+            padding: 10px;
+            width: 60px;
+            font-size: 1em;
+            text-align: center;
+            margin: 10px 0;
+            border: 2px solid #ff9999;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🍅 Pomodoro Timer 🍅</h1>
+    <div>
+        <label for="custom-time">Set Time (minutes):</label>
+        <input type="number" id="custom-time" min="1" max="120" placeholder="25">
+    </div>
+    <div id="timer">25:00</div>
+    <button onclick="startTimer()">Start</button>
+    <button onclick="stopTimer()">Stop</button>
+    <button onclick="resetTimer()">Reset</button>
+
+    <script>
+        let timerInterval; // To store the interval
+        let timeLeft;      // Time left in seconds
+        let isRunning = false;
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            document.getElementById('timer').textContent =
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function startTimer() {
+            if (isRunning) return; // Prevent multiple timers
+            const customTimeInput = document.getElementById('custom-time').value;
+            if (!isRunning && (!timeLeft || timeLeft === 0)) {
+                const customMinutes = customTimeInput ? parseInt(customTimeInput) : 25;
+                timeLeft = customMinutes * 60; // Set time in seconds
+            }
+            isRunning = true;
+
+            timerInterval = setInterval(() => {
+                if (timeLeft > 0) {
+                    timeLeft--;
+                    updateTimerDisplay();
+                } else {
+                    clearInterval(timerInterval);
+                    isRunning = false;
+                    alert("Time's up! Take a break!");
+                }
+            }, 1000);
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+            isRunning = false;
+        }
+
+        function resetTimer() {
+            stopTimer();
+            const customTimeInput = document.getElementById('custom-time').value;
+            const customMinutes = customTimeInput ? parseInt(customTimeInput) : 25;
+            timeLeft = customMinutes * 60;
+            updateTimerDisplay();
+        }
+
+        // Initialize with default 25 minutes
+        timeLeft = 25 * 60;
+        updateTimerDisplay();
+    </script>
+</body>
+</html>
